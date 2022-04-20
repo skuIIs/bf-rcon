@@ -13,14 +13,14 @@ BF4 RCon in pure JavaScript
 You can use npm or yarn to install this package into your project
 
 ```bash
-npm install skuIIs/bf-rcon
-yarn add skuIIs/bf-rcon
+npm install bf4rcon
+yarn add bf4rcon
 ```
 
 ## Usage
 
 ```js
-const { BFrcon } = require('bf-rcon')
+const { BFrcon } = require('bf4rcon')
 
 async function init () {
   const rcon = new BFrcon()
@@ -115,6 +115,8 @@ Listen for events from the server is simple. After connecting to the server(s) j
 
 ## Caveats
 
+- This has only been tested for BF4. This *could* work for BF3 or BFH.
+
 - This package is meant for long-running processes and also doesn't handle reconnecting after disconnects or errors. You must handle those on your own. Example:
 
 ```js
@@ -124,6 +126,7 @@ Listen for events from the server is simple. After connecting to the server(s) j
     password: 'password'
   }
 
+  // Initial connection
   const server = await rcon.connect(config)
 
   server.on('ready', async function () {
@@ -132,8 +135,8 @@ Listen for events from the server is simple. After connecting to the server(s) j
 
   // Socket connection was ended
   server.on('end', function () {
-      // Reconnect!
-      server = await rcon.connect(config)
+    // Reconnect!
+    server = await rcon.connect(config)
   })
 ```
 

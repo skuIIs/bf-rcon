@@ -1,6 +1,6 @@
 {
-  "name": "bf-rcon",
-  "version": "1.0.0",
+  "name": "bf4rcon",
+  "version": "1.0.1",
   "description": "BF4 Rcon in pure JavaScript",
   "main": "index.js",
   "scripts": {
