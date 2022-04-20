@@ -1,0 +1,170 @@
+# skuIIs/bf-rcon
+
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/skuIIs/bf-rcon?style=flat-square)
+![GitHub top language](https://img.shields.io/github/languages/top/skuIIs/bf-rcon?style=flat-square)
+![npm bundle size (scoped)](https://img.shields.io/bundlephobia/min/skuIIs/bf-rcon?style=flat-square)
+![GitHub Sponsors](https://img.shields.io/github/sponsors/skuIIs?style=flat-square)
+![GitHub](https://img.shields.io/github/license/skuIIs/bf-rcon?style=flat-square)
+
+BF4 RCon in pure JavaScript
+
+## Installation
+
+You can use npm or yarn to install this package into your project
+
+```bash
+npm install skuIIs/bf-rcon
+yarn add skuIIs/bf-rcon
+```
+
+## Usage
+
+```js
+const { BFrcon } = require('bf-rcon')
+
+async function init () {
+  const rcon = new BFrcon()
+
+  // Connects to server(s), can be an object or an array of objects
+
+  // *** Example for a single server ***
+  const server = await rcon.connect({
+    host: '127.0.0.1',
+    port: 47200,
+    password: 'password'
+  })
+
+  server.on('ready', async function () {
+    console.log('Server: ' + this.server_id + ' added to listener!')
+
+    // Run some command
+    const players = await this.listPlayers()
+    console.log(players)
+
+    // Listen for some event
+    this.on('player.onAuthenticated', function (player) {
+      console.log(player)
+    })
+  }.bind(server))
+
+  // *** Example for a multiple servers ***
+  const servers = await rcon.connect([
+    {
+      host: '127.0.0.1',
+      port: 47200,
+      password: 'password'
+    },
+    {
+      host: '127.0.0.1',
+      port: 47201,
+      password: 'password'
+    },
+  ])
+
+  for (var i = 0, len = servers.length; i < len; i++) {
+    servers[i].on('ready', async function () {
+      console.log('Server: ' + this.server_id + ' added to listener!')
+
+      // Run some command
+      const players = await this.listPlayers()
+      console.log(players)
+
+      // Listen for some event
+      this.on('player.onAuthenticated', function (player) {
+        console.log(player)
+      })
+    }.bind(servers[i]))
+  }
+}
+
+init()
+```
+
+## Commands
+
+After connecting to a server(s) you can use the `exec` function to execute a command, or use the built-in API for commands made with promises. See `./services/commands/*` for available commands.
+
+```js
+...
+  this.exec('serverInfo', function (error, response) {
+    if (error) return reject(error)
+    // Do something with response. Note here you must parse things yourself!
+  })
+...
+```
+
+Is the same as:
+
+```js
+...
+  const info = await this.serverInfo()
+  // Already parsed for you!
+  console.log(info)
+...
+```
+
+## Events
+
+Listen for events from the server is simple. After connecting to the server(s) just use a standard `on` listener.
+
+```js
+  this.on('player.onChat', function (chat) {
+    console.log(chat)
+  })
+```
+
+## Caveats
+
+- This package is meant for long-running processes and also doesn't handle reconnecting after disconnects or errors. You must handle those on your own. Example:
+
+```js
+  const config = {
+    host: '127.0.0.1',
+    port: 47200,
+    password: 'password'
+  }
+
+  // Initial connection
+  const server = await rcon.connect(config)
+
+  server.on('ready', async function () {
+    // Code
+  }.bind(server))
+
+  // Socket connection was ended
+  server.on('end', function () {
+    // Reconnect!
+    server = await rcon.connect(config)
+  })
+```
+
+- If you want to issue a command on a server and exit then it can be done, you just have to connect, issue the command after the connection is ready, and then manually disconnect. Example:
+
+```js
+  const server = await rcon.connect({
+    host: '127.0.0.1',
+    port: 47200,
+    password: 'password'
+  })
+
+  server.on('ready', async function () {
+
+    // Run some command
+    const players = await this.listPlayers()
+    console.log(players)
+
+    // Disconnect
+    this.disconnect()
+  }.bind(server))
+```
+
+{{>main}}
+
+## Contributing
+Pull requests are welcome for bug fixes or feature requests.
+
+## Sponsors
+Support this project and possibly other open-source projects by becoming a sponsor. Higher tier sponsor will appear here with a logo and link to your website. [Become a sponsor](https://github.com/sponsors/skuIIs)
+
+## License
+[MIT](https://github.com/skuIIs/bf-rcon/blob/main/LICENSE)

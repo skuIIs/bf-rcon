@@ -1,0 +1,31 @@
+{
+  "name": "bf-rcon",
+  "version": "1.0.0",
+  "description": "BF4 Rcon in pure JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard",
+    "readme": "jsdoc2md -t README.hbs index.js services/*.js services/helpers/*.js > README.md"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skuIIs/bf-rcon.git"
+  },
+  "author": "skuIIs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/skuIIs/bf-rcon/issues"
+  },
+  "homepage": "https://github.com/skuIIs/bf-rcon#readme",
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/skuIIs"
+  },
+  "devDependencies": {
+    "jsdoc-to-markdown": "^7.1.1",
+    "standard": "^16.0.4"
+  },
+  "dependencies": {
+    "geoip-country": "^4.0.105"
+  }
+}
